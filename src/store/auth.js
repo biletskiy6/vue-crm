@@ -13,11 +13,16 @@ export default {
           })
     },
 
+    async fetchUid() {
+      const user = await firebase.auth().currentUser;
+      return await user.uid || null;
+    },
+
     register({dispatch, commit}, {email, password, name, router}) {
       return firebase.auth()
           .createUserWithEmailAndPassword(email, password)
-          .then((user) => {
-            const userUid = user.user.uid;
+          .then(async (user) => {
+            const userUid = await dispatch("fetchUid");
             return firebase.database().ref(`/users/${userUid}/info`).set({
               bill: 10000,
               name
@@ -26,8 +31,9 @@ export default {
           .then(() => router.push("/"))
           .catch((e) => commit("setError", e));
     },
-    logout() {
-      return firebase.auth().signOut();
+    async logout({commit}) {
+      await firebase.auth().signOut();
+      commit("clearInfo");
     }
   }
 }
