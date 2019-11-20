@@ -106,7 +106,7 @@
       agree: {checked: v => v}
     },
     methods: {
-      submitForm() {
+       submitForm() {
         if (this.$v.$invalid) {
           this.$v.$touch();
           return;
@@ -116,10 +116,11 @@
           email: this.email,
           password: this.password,
           name: this.name,
-          agree: this.agree
+          agree: this.agree,
+          router: this.$router
         };
 
-        this.$router.push("/");
+        this.$store.dispatch("register", formData);
       },
       getMinPasswordLength() {
         return this.$v.password.$params.minLength.min;
